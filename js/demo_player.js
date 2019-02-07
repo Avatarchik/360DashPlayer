@@ -122,7 +122,7 @@ var PlayerDemonstration = /** @class */ (function () {
                                         location.reload()
                                     }, 3000)
                                 }
-                            }, Math.max(this._player_video.buffered.end(0) - this._player_video.currentTime - 1.5, 0) * 1000)*/
+                            },0)*/
                         }
                         catch (e) {
                             console.error(e);

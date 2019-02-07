@@ -158,6 +158,15 @@ class PlayerDemonstration {
                             let old = this._player_last_time
                             this._player_last_time = this._player_video.buffered.end(0)
 
+                            if (!this._playerAppend() && this._demo_reload) {
+                                console.log("Reloading")
+                                // nothing more to append, reload in 5000ms
+                                setTimeout(() => {
+                                    location.reload()
+                                }, 3000)
+                            }
+
+                            /*
                             setTimeout(() => {
 
                                 if (!this._playerAppend() && this._demo_reload) {
@@ -167,7 +176,7 @@ class PlayerDemonstration {
                                         location.reload()
                                     }, 3000)
                                 }
-                            },1000)
+                            },0)*/
                         }
                         catch (e) {
                             console.error(e)
