@@ -1,0 +1,269 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: black;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+}
+
+.hide {
+    display: none;
+}
+
+.main {
+    width: 100%;
+    height: calc(100% - 300px);
+    position: relative;
+}
+#container {
+    position: relative;
+    max-height: 100%;
+    overflow: hidden;
+    margin:auto;
+}
+video {
+    position: relative;
+    width:100%;
+    height:auto;
+    object-fit:contain;
+    object-position:center;
+}
+
+#panel {
+    background: white;
+    max-height: 300px;
+    min-height: 300px;
+    height: 300px;
+    width: 100%;
+    color: #4d4d4d;
+}
+
+#panel button.active {
+    font-weight: bold;
+}
+
+#panel .col {
+    width: 16.66%;
+    box-sizing: border-box;
+    border-right: 1px solid #e7e7e7;
+    height: 100%;
+    min-height: 100%;
+    float:left;
+}
+
+#panel .col h3 {
+    background-color: #e7e7e7;
+    margin: 0px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+
+
+#panel .col.tabs {
+    width: 50%;
+}
+
+#panel .col.tabs h3 {
+    margin-bottom: 5px; 
+}
+
+#panel .col.tabs .buttons {
+    font-size: 14px;
+    line-height: 26px;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+#panel .col.tabs .content {
+    display: none;
+}
+
+#panel .col.tabs .content.active {
+    display: block;
+}
+
+#panel .col.options {
+    width: 16.66%;
+}
+
+
+
+#panel .col .content {
+    font-size: 14px;
+    line-height: 26px;
+    width: 90%;
+    height: calc(100% - 120px);
+    margin: auto;
+}
+
+#panel .col .content .line::after {
+    clear: both;
+}
+
+#panel .col .content .line .left {
+    float:left;
+}
+
+#panel .col .content .line .right {
+    float:right;
+    font-weight: bold;
+}
+/*
+    GRID
+*/
+#grid {
+    position: absolute; width:100%; height:100%; top:0px; left: 0px; background:none; z-index:9000;
+}
+
+#grid.shown {
+    opacity: 0.5;
+    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+
+#grid>div {
+    box-sizing: border-box;
+    border-bottom: 1px solid transparent;
+    border-right: 1px solid transparent;
+    position: relative;
+}
+
+#grid.shown>div[ref] {
+    box-sizing: border-box;
+    border-bottom: 1px solid white;
+    border-right: 1px solid white;
+    position: relative;
+}
+
+#grid .no-bottom {
+    border-bottom: none !important;
+}
+
+#grid .no-right {
+    border-right: none !important;
+}
+
+#grid>div h2 {
+    font-size: 30px;
+    top: 0;
+    left: 0;
+}
+
+#grid>div p.level {
+    font-size: 20px;
+    bottom: 0;
+    left: 0;
+}
+
+#grid>div p.bitrate {
+    font-size: 20px;
+    bottom: 0;
+    right: 0;
+}
+
+#grid>div h2,
+#grid>div p.level,
+#grid>div p.bitrate {
+    color: white;
+    position: absolute;
+    padding: 15px;
+    margin: 0px;
+    display: none;
+}
+
+#grid.shown>div h2,
+#grid.shown>div p.level,
+#grid.shown>div p.bitrate {
+    display: block;
+}
+
+#grid.buttons>div div.controls {
+    display: block;
+}
+
+#grid>div div.controls {
+    display: none;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    position: absolute;
+    top: 0;
+    left: 0px;
+}
+
+#grid>div div.controls::after {
+    clear: both;
+}
+
+#grid>div div.controls>div {
+    float: left;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#grid>div div.controls>div span {
+    font-size: 40px;
+    color: white;
+    display: none;
+}
+
+#grid.buttons>div div.controls>div:hover span {
+    display: block;
+}
+
+#grid.buttons>div.feedback:hover {
+    background: rgba(240, 240, 240, 0.3);
+    cursor: pointer;
+}
+
+#grid.buttons>div.feedback div.controls>.plus:hover {
+    background: rgba(0, 240, 0, 0.3);
+}
+
+#grid.buttons>div.feedback div.controls>.minus:hover {
+    background: rgba(240, 0, 0, 0.3);
+}
+
+#grid.buttons>div.feedback div.controls>.plus:active {
+    background: rgba(0, 240, 0, 0.9);
+}
+
+#grid.buttons>div.feedback div.controls>.minus:active {
+    background: rgba(240, 0, 0, 0.9);
+}
+
+/*
+    VIEW
+*/
+#view {
+    display: none;
+    z-index:0;
+    width:200px;
+    height:200px;
+    position:absolute;
+    top:0px;
+    left:0px;
+    border: 1px solid rgba(255,255,255,1);
+    background:rgba(255,255,255,0.2);
+    box-sizing: border-box;
+}
+
+#view.active {
+    display: block;
+    z-index: 9001;
+}
+
+#logo {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 200px;
+    height: 100px;
+    background-image: url("../img/fokus_logo_768x209.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}

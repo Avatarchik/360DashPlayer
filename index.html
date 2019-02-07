@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fraunhofer FOKUS - HEVC Tiled MSE Player</title>
+    <script type="text/javascript" src="libs/iso_boxer.min.js"></script>
+    <script type="text/javascript" src="libs/hevc_merger.js"></script>
+    <script type="text/javascript" src="libs/Chart.bundle.min.js"></script>
+    <script type="text/javascript" src="js/demo_player.js"></script>
+    <!--
+    <script type="text/javascript" src="http://famium.fokus.fraunhofer.de/apps/360/html5player/js/three.min.js"></script>
+    <script type="text/javascript" src="http://famium.fokus.fraunhofer.de/apps/360/html5player/js/famium360.js"></script>
+    -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+    <div id="logo"></div>
+    <!--<div id="vr"></div>-->
+    <div class="main">
+        <div id="container">
+            <video autoplay></video>
+            <div id="view" class="active"></div>
+            <div id="grid" class=""></div>
+        </div>
+    </div>
+
+    <div id="panel">
+        <div class="col">
+            <h3>Video Information</h3>
+            <div class="content">
+                <div class="line">
+                    <div class="left">Name:</div>
+                    <div class="right" data="infos.videoname"></div>
+                    <div style="clear: both;"></div>
+                </div>
+                <div class="line">
+                    <div class="left">Number of tiles:</div>
+                    <div class="right" data="infos.numbertiles"></div>
+                    <div style="clear: both;"></div>
+                </div>
+                <div class="line">
+                    <div class="left">Grid's size:</div>
+                    <div class="right" data="infos.gridssize"></div>
+                    <div style="clear: both;"></div>
+                </div>
+                <div class="line">
+                    <div class="left">Number of segments:</div>
+                    <div class="right" data="infos.numbersegments"></div>
+                    <div style="clear: both;"></div>
+                </div>
+                <div class="line">
+                    <div class="left">Tatal resolution:</div>
+                    <div class="right" data="infos.resolution"></div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h3>Currently</h3>
+            <div class="content">
+                <div class="line">
+                    <div class="left">Total downloaded:</div>
+                    <div class="right" data="overview.total"></div>
+                    <div style="clear: both;"></div>
+                </div>
+                <div class="line">
+                    <div class="left">Current bitrate:</div>
+                    <div class="right" data="overview.bitrate"></div>
+                    <div style="clear: both;"></div>
+                </div>
+                <!--
+                <div class="line">
+                    <div class="left">Tiles bitrates:</div>
+                    <div class="right"></div>
+                    <div style="clear: both;"></div>
+                </div>
+                <p style="color: white;" id="current_bitrate"></p>-->
+            </div>
+        </div>
+        <div class="col tabs">
+            <h3>Currently</h3>
+            <div class="buttons">
+                <button value="bitrates" class="active">Bitrates - Chart</button>
+                <button value="downloading">Merging Time - Chart</button>
+            </div>
+            <div class="content active" ref="bitrates">
+                <canvas id="chart-bitrates"></canvas>
+            </div>
+            <div class="content" ref="downloading">
+                <canvas id="chart-downloading"></canvas>
+            </div>
+        </div>
+        <div class="col options">
+            <h3>Options</h3>
+            <div class="content">
+                <div class="line">
+                    <div class="left">Grid:</div>
+                    <div class="right"><button value="grid">Show</button></div>
+                    <div style="clear: both;"></div>
+                </div>
+                <div class="line">
+                    <div class="left">Mode:</div>
+                    <div class="right"><button value="mode">Switch to buttons</button></div>
+                    <div style="clear: both;"></div>
+                </div>
+                <div class="line">
+                    <div class="left">Viewport's size:</div>
+                    <div class="right"><input type="text" style="width: 50px;" name="width" /> x <input type="text" style="width: 50px;" name="height"
+                        /></div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+
+    <script type="text/javascript">
+
+        grid_index = 0
+        content_index = 0
+
+        let hash = window.location.hash
+        hash = !hash ? '' : hash.substr(1)
+
+        if (hash.length) {
+            // get all params
+            let demo_opts = hash.split('--')
+            demo_opts.forEach(o => {
+                let p = o.split('=')
+                if (p.length !== 2) return
+
+                let name = p[0], value = p[1]
+
+                if (name === 'content-index') content_index = value
+                else if (name === 'grid-index') grid_index = value
+            })
+        }
+
+        let demo = new PlayerDemonstration('media/media.json', content_index, grid_index)
+        demo.init()
+
+    </script>
+</body>
+
+</html>
