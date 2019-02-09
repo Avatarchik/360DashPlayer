@@ -1,23 +1,74 @@
 var PlayerDemonstration = /** @class */ (function () {
     function PlayerDemonstration(content_list_url, index_video, index_grid) {
+        this.actualTile = 4;
+        this.tilesMap = {};
         this._CONTENT_URL = content_list_url;
         this._index_grid = index_grid;
         this._index_video = index_video;
+        this.finish = false;
     }
     PlayerDemonstration.prototype.init = function (logs) {
         var _this = this;
         if (HEVCMerger && Chart) {
             this._player_merger = new HEVCMerger(logs);
             return this._setContent().then(function () {
-                _this._setDemo();
-                //  this._setControls()
-                _this._setPlayer();
+                _this.createTilesMap(3, 3).then(function (map) {
+                    _this.cameraRotationTextView = document.getElementById("msg");
+                    _this._setDemo();
+                    //  this._setControls()
+                    _this._setPlayer();
+                });
             });
         }
         else if (Chart)
             console.error('HEVCMerger is missing');
         else
             console.error('Chart JS is missing');
+    };
+    /**
+   * Create tiles map to identify the visible tile.
+   *
+   * @param colTiles - tile count in x direction
+   * @param rowTiles - tile count in y direction
+   */
+    PlayerDemonstration.prototype.createTilesMap = function (colTiles, rowTiles) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var x = colTiles;
+            var y = rowTiles;
+            var startTile = 0;
+            var xMax = 90;
+            var yMax = 180;
+            var xRange = 180 / x;
+            var yRange = 360 / y;
+            var tile = startTile;
+            // rows
+            // +90 to -90
+            for (var r = 90; r > -90; r--) {
+                if (r == (xMax - xRange)) {
+                    // next tile
+                    xMax = xMax - xRange;
+                    tile++;
+                    startTile = tile;
+                }
+                else {
+                    tile = startTile;
+                    yMax = 180;
+                }
+                // cols
+                // -180 to 180
+                for (var c = 180; c > -180; c--) {
+                    _this.tilesMap[JSON.stringify(c) + "," + JSON.stringify(r)] = tile;
+                    if (c == (yMax - yRange)) {
+                        // next tile
+                        tile++;
+                        yMax = yMax - yRange;
+                    }
+                }
+            }
+            console.log("Tilesmap: " + JSON.stringify(_this.tilesMap));
+            resolve(_this.tilesMap);
+        });
     };
     PlayerDemonstration.prototype._setContent = function () {
         var _this = this;
@@ -105,6 +156,18 @@ var PlayerDemonstration = /** @class */ (function () {
                         try {
                             var old = _this._player_last_time;
                             _this._player_last_time = _this._player_video.buffered.end(0);
+                            var x = Math.trunc(document.querySelector('a-camera').getAttribute('rotation')["x"]);
+                            var y = Math.trunc(document.querySelector('a-camera').getAttribute('rotation')["y"]);
+                            if (y > 180) {
+                                document.querySelector('a-camera').setAttribute('rotation', JSON.stringify(x) + ' -179 0');
+                            }
+                            else if (y < -179) {
+                                document.querySelector('a-camera').setAttribute('rotation', '{ x: ' + x + ', y: 180}');
+                            }
+                            _this.actualTile = _this.tilesMap[x + "," + y];
+                            console.log("x: " + x);
+                            console.log("y: " + y);
+                            console.log("Tile: " + _this.actualTile);
                             if (!_this._playerAppend() && _this._demo_reload) {
                                 console.log("Reloading");
                                 // nothing more to append, reload in 5000ms
@@ -119,7 +182,7 @@ var PlayerDemonstration = /** @class */ (function () {
                                     console.log("Reloading")
                                     // nothing more to append, reload in 5000ms
                                     setTimeout(() => {
-                                        location.reload()
+                                        location.reload()""
                                     }, 3000)
                                 }
                             },0)*/
@@ -128,7 +191,7 @@ var PlayerDemonstration = /** @class */ (function () {
                             console.error(e);
                             _this._playerAppend();
                         }
-                    });
+                    }, 900);
                 else
                     _this._playerAppend();
             });
@@ -145,8 +208,10 @@ var PlayerDemonstration = /** @class */ (function () {
             this._playerLoadSegment().then(function (arrayBuffer) { return _this._player_source_buffer.appendBuffer(arrayBuffer); });
             return true;
         }
-        else
+        else {
+            this.finish = true;
             return false;
+        }
     };
     PlayerDemonstration.prototype._playerLoadSegment = function () {
         var _this = this;
@@ -162,11 +227,14 @@ var PlayerDemonstration = /** @class */ (function () {
             var promises = [];
             var start = Date.now();
             var scheme = _this._content_url_scheme.replace('%segment%', segment_number + '');
-            console.log("Grid: " + _this._content_grid_size[0] + "x" + _this._content_grid_size[1]);
             var _loop_1 = function (i) {
                 var url_1 = scheme.replace(new RegExp('%bitrate%', 'g'), _this._content_bitrates[0] + '')
                     .replace('%tile%', _this._content_video_tracks_numbers[i] + '');
-                console.log("Fetch: " + url_1);
+                if (i == _this.actualTile) {
+                    url_1 = scheme.replace(new RegExp('%bitrate%', 'g'), _this._content_bitrates[2] + '')
+                        .replace('%tile%', _this._content_video_tracks_numbers[i] + '');
+                }
+                //console.log("Rotation: "+JSON.stringify(document.querySelector('a-videosphere').getAttribute('rotation')));
                 promises.push(fetch(url_1).then(function (r) { return r.arrayBuffer(); })
                     .then(function (arrayBuffer) {
                     stats.bytes[i] = arrayBuffer.byteLength;
@@ -179,7 +247,9 @@ var PlayerDemonstration = /** @class */ (function () {
             }
             var url = scheme.replace(new RegExp('%bitrate%', 'g'), _this._content_bitrates[0] + '')
                 .replace('%tile%', _this._content_base_track_number + '');
-            console.log("Fetch: " + url);
+            //                        this.cameraRotationTextView.setAttribute("text","align:center; width:3;wrapCount:100;color:red;value:"+JSON.stringify(document.querySelector('a-camera').getAttribute('rotation')));
+            //  console.log("Rotation: "+JSON.stringify(document.querySelector('a-videosphere').getAttribute('rotation')));
+            //   console.log("Fetch: "+url);
             promises.push(fetch(url).then(function (r) { return r.arrayBuffer(); })
                 .then(function (arrayBuffer) {
                 stats.bytes[_this._content_grid_size[0] * _this._content_grid_size[1]] = arrayBuffer.byteLength;

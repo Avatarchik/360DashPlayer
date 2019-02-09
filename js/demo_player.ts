@@ -8,6 +8,7 @@ class PlayerDemonstration {
     // indexes
     private _index_video: number
     private _index_grid: number
+    private finish: boolean;
 
     // content options
     private _content_name: string
@@ -42,20 +43,31 @@ class PlayerDemonstration {
     private _player_tiles_bytes_length: number[]
     private _player_merger: any
     private _player_container: HTMLElement
+    private actualTile: number = 4;
+
+
+    private cameraRotationTextView;
+
+    private tilesMap = {};
 
     constructor(content_list_url, index_video, index_grid) {
         this._CONTENT_URL = content_list_url
         this._index_grid = index_grid
         this._index_video = index_video
+        this.finish = false;
     }
 
     init(logs?: boolean): Promise<any> {
         if (HEVCMerger && Chart) {
             this._player_merger = new HEVCMerger(logs)
             return this._setContent().then(() => {
-                this._setDemo()
-              //  this._setControls()
-                this._setPlayer()
+                this.createTilesMap(3,3).then( map => {
+                    this.cameraRotationTextView = document.getElementById("msg"); 
+                    this._setDemo()
+                  //  this._setControls()
+                    this._setPlayer()
+                });
+               
             })
         }
         else if (Chart)
@@ -63,6 +75,68 @@ class PlayerDemonstration {
         else
             console.error('Chart JS is missing')
     }
+
+ 
+      /**
+     * Create tiles map to identify the visible tile.
+     *
+     * @param colTiles - tile count in x direction
+     * @param rowTiles - tile count in y direction
+     */
+    private createTilesMap(colTiles, rowTiles) :  Promise<any> {
+        return new Promise((resolve,reject) => {
+            let x = colTiles;
+            let y = rowTiles;
+            let startTile = 0;
+            let xMax = 90;
+            let yMax = 180;
+    
+            let xRange = 180 / x;
+            let yRange = 360 / y;
+    
+            let tile = startTile;
+    
+            // rows
+            // +90 to -90
+            for (let r = 90; r > -90; r--) {
+    
+                if (r == (xMax - xRange)) {
+                    // next tile
+                    xMax = xMax - xRange;
+                    tile++;
+                    startTile = tile;
+                } else {
+                    tile = startTile;
+                    yMax = 180;
+                }
+    
+                // cols
+                // -180 to 180
+                for (let c = 180; c > -180; c--) {
+                 
+                    this.tilesMap[JSON.stringify(c)+","+JSON.stringify(r)] = tile;
+                  
+                    if (c == (yMax - yRange)) {
+                        // next tile
+                        tile++;
+                        yMax = yMax - yRange;
+                    }
+                }
+            }
+            console.log("Tilesmap: "+JSON.stringify(this.tilesMap));
+            resolve(this.tilesMap);
+    
+      
+
+
+        });
+
+
+
+     
+       
+    }
+
 
     private _setContent(): Promise<any> {
         return fetch(this._CONTENT_URL).then(d => d.json()).then(json => {
@@ -128,6 +202,8 @@ class PlayerDemonstration {
         })
     }
 
+
+
     private _setData(name: string, value: string): void {
         let e = document.querySelectorAll('[data="' + name + '"]')
         for (let i = 0; i < e.length; i++) e[i].innerHTML = value
@@ -158,6 +234,24 @@ class PlayerDemonstration {
                             let old = this._player_last_time
                             this._player_last_time = this._player_video.buffered.end(0)
 
+                            let x = Math.trunc(document.querySelector('a-camera').getAttribute('rotation')["x"]);
+                            let y = Math.trunc(document.querySelector('a-camera').getAttribute('rotation')["y"]);
+
+
+                            if(y > 180) {
+                                document.querySelector('a-camera').setAttribute('rotation',JSON.stringify(x)+' -179 0');
+
+                            } else if(y < -179){
+                                document.querySelector('a-camera').setAttribute('rotation','{ x: '+x+', y: 180}');
+                            }
+                            this.actualTile = this.tilesMap[x+","+y];
+
+                        
+                            console.log("x: "+x);
+                            console.log("y: "+y);
+                            console.log("Tile: "+this.actualTile);
+
+
                             if (!this._playerAppend() && this._demo_reload) {
                                 console.log("Reloading")
                                 // nothing more to append, reload in 5000ms
@@ -173,7 +267,7 @@ class PlayerDemonstration {
                                     console.log("Reloading")
                                     // nothing more to append, reload in 5000ms
                                     setTimeout(() => {
-                                        location.reload()
+                                        location.reload()""
                                     }, 3000)
                                 }
                             },0)*/
@@ -182,7 +276,7 @@ class PlayerDemonstration {
                             console.error(e)
                             this._playerAppend()
                         }
-                    })
+                    },900)
                 else
                     this._playerAppend()
             })
@@ -200,8 +294,11 @@ class PlayerDemonstration {
             this._playerLoadSegment().then(arrayBuffer => this._player_source_buffer.appendBuffer(arrayBuffer))
             return true
         }
-        else
+        else {
+            this.finish = true;
             return false
+        }
+            
     }
 
     private _playerLoadSegment(): Promise<Uint8Array> {
@@ -219,15 +316,18 @@ class PlayerDemonstration {
             let start = Date.now()
             let scheme = this._content_url_scheme.replace('%segment%', segment_number + '')
 
-            console.log("Grid: "+this._content_grid_size[0]+"x"+this._content_grid_size[1]);
-
             //console.log(stored_segments)
             for (let i = 0; i < this._content_grid_size[0] * this._content_grid_size[1]; i++){
-
                     let url = scheme.replace(new RegExp('%bitrate%', 'g'), this._content_bitrates[0] + '')
                     .replace('%tile%', this._content_video_tracks_numbers[i] + '');
+                    
+                    if(i ==  this.actualTile){
+                        url = scheme.replace(new RegExp('%bitrate%', 'g'), this._content_bitrates[2] + '')
+                        .replace('%tile%', this._content_video_tracks_numbers[i] + '');
+                    }
 
-                    console.log("Fetch: "+url);
+                   
+                  //console.log("Rotation: "+JSON.stringify(document.querySelector('a-videosphere').getAttribute('rotation')));
 
                     promises.push(fetch(url).then(r => r.arrayBuffer())
                         .then(arrayBuffer => {
@@ -238,8 +338,12 @@ class PlayerDemonstration {
                     }
                         let url = scheme.replace(new RegExp('%bitrate%', 'g'), this._content_bitrates[0] + '')
                         .replace('%tile%', this._content_base_track_number + '');
-            
-                        console.log("Fetch: "+url);
+
+//                        this.cameraRotationTextView.setAttribute("text","align:center; width:3;wrapCount:100;color:red;value:"+JSON.stringify(document.querySelector('a-camera').getAttribute('rotation')));
+
+
+                      //  console.log("Rotation: "+JSON.stringify(document.querySelector('a-videosphere').getAttribute('rotation')));
+                     //   console.log("Fetch: "+url);
 
                         promises.push(fetch(url).then(r => r.arrayBuffer())
                 .then(arrayBuffer => {

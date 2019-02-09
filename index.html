@@ -23,20 +23,15 @@
 <!-- Specify our scene. -->
     <a-scene>
       <!-- The original example also has this 180 degree rotation, to appear to be going forward. -->
-      <a-videosphere rotation="0 180 0" src="#video" 
+      <a-videosphere rotation="0 -90 0" src="#video" 
                      play-on-window-click
                      play-on-vrdisplayactivate-or-enter-vr>
       </a-videosphere>
       
       <!-- Define camera with zero user height, movement disabled and arrow key rotation added. -->
-      <a-camera user-height="0" wasd-controls-enabled="false" arrow-key-rotation>
+      <a-camera rotation="0 0 0" user-height="0" wasd-controls-enabled="false" arrow-key-rotation>
         <!-- Text element for display messaging.  Hide once video is playing. -->
-        <a-entity id="msg" position="0 -0.3 -1.5" text="align:center; 
-                width:3;
-                wrapCount:100;
-                color:red;
-                value:Click window to make the video play, if needed."
-                hide-once-playing="#video">
+        <a-entity id="msg" position="0 -0.3 -1.5">
         </a-entity>
       </a-camera>      
       

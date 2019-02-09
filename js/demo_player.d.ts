@@ -4,6 +4,7 @@ declare class PlayerDemonstration {
     private _CONTENT_URL;
     private _index_video;
     private _index_grid;
+    private finish;
     private _content_name;
     private _content_grid_size;
     private _content_url_scheme;
@@ -30,8 +31,18 @@ declare class PlayerDemonstration {
     private _player_tiles_bytes_length;
     private _player_merger;
     private _player_container;
+    private actualTile;
+    private cameraRotationTextView;
+    private tilesMap;
     constructor(content_list_url: any, index_video: any, index_grid: any);
     init(logs?: boolean): Promise<any>;
+    /**
+   * Create tiles map to identify the visible tile.
+   *
+   * @param colTiles - tile count in x direction
+   * @param rowTiles - tile count in y direction
+   */
+    private createTilesMap(colTiles, rowTiles);
     private _setContent();
     private _setDemo();
     private _setData(name, value);
