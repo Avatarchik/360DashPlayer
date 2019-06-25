@@ -14,7 +14,7 @@ var PlayerDemonstration = (function () {
                 _this._setControls();
                 _this._setPanel();
                 _this._setPlayer();
-            });fdsf
+            });
         }
         else if (Chart)
             console.error('HEVCMerger is missing');
