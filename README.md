@@ -187,3 +187,9 @@ Put your content as a JSON Object with the following properties:
 - **ratio**: is the video aspect ratio (for instance, [16,9]). This is useful only for demo purpose. It doesn't impact the content downloading, merging and playing.
 
 To try your content, don't forget to set the options `grid-index` and `content-index` in the player's url.
+
+## Generating pure HEVC content
+
+First you convert the mp4 file to raw hevc content with ffmpeg. To add the audio later extract the audio with ffmpeg.
+Now you can coding the video with different bitrates with ffmpeg. After that you can create and dash the mp4 file.
+Dont't forget to integrate the audio into the video file. The outputted mpd file can use to stream the file in a webbrowser such as safari. Make sure your browser support the hevc codec.
