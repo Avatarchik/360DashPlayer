@@ -205,7 +205,7 @@ sudo ffmpeg -i file.mp4 file.yuv
 ### Extract audio
 
 ```
-sudo ffmpeg -i file.mp4 file.aac
+sudo ffmpeg -i file.mp4 audio.aac
 ```
 
 ### From YUV to HEVC Tiled
@@ -217,9 +217,14 @@ Note: use `ffprobe` on the base file to get the default bitrate. Then you can ch
 ### From HEVC to MP4
 
 `mp4box -add video1000.265 -new video1000.mp4` creates a new MP4 file with a bitrate of 1000 kbit/s without audio.
+`mp4box -add audio.aac -new audio.mp4` creates the audio file.
 
 
+### From MP4 to DASH
 
+`mp4box -dash 1000 -frag 1000 -rap -segment-name segment_%s -url-template -out manifest.mpd video1000.mp4 video5000.mp4 audio.mp4#audio` generates the DASH Content.
+
+Note: You can only split (dash) the content on the i-frames of the video. For that reason you must calculate the dash and frag parameter. For example if you have a GOP size of 64 frames and a framerate of 30 fps you must set a dash and frag parameter of 2133 milliseconds (64/30). Then the bitrate can be changed on the segment boundaries of 2,13 seconds.
 
 
 
