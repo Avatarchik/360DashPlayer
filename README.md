@@ -193,3 +193,34 @@ To try your content, don't forget to set the options `grid-index` and `content-i
 First you convert the mp4 file to raw hevc content with ffmpeg. To add the audio later extract the audio with ffmpeg.
 Now you can coding the video with different bitrates with ffmpeg. After that you can create and dash the mp4 file.
 Dont't forget to integrate the audio into the video file. The outputted mpd file can use to stream the file in a webbrowser such as safari. Make sure your browser support the hevc codec.
+
+Next all these steps will be described in detail.
+
+### From MP4 to YUV
+
+```
+sudo ffmpeg -i file.mp4 file.yuv
+```
+
+### Extract audio
+
+```
+sudo ffmpeg -i file.mp4 file.aac
+```
+
+### From YUV to HEVC Tiled
+
+`kvazaar -i hugefile.yuv --input-res=1920x1080 --bitrates=1000000 -o video1000.265` will create a HEVC file. This one should be playable by `ffplay`
+
+Note: use `ffprobe` on the base file to get the default bitrate. Then you can choose lower bitrates (to downgrade the video quality). In this example the video will be coding with a bitrate of 1000 kbit/s. Don't forget to put the `input-res` which is the resolution of the content. 
+
+### From HEVC to MP4
+
+`mp4box -add video1000.265 -new video1000.mp4` creates a new MP4 file with a bitrate of 1000 kbit/s without audio.
+
+
+
+
+
+
+
