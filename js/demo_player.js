@@ -230,7 +230,7 @@ var PlayerDemonstration = /** @class */ (function () {
             var _loop_1 = function (i) {
                 var url_1 = scheme.replace(new RegExp('%bitrate%', 'g'), _this._content_bitrates[0] + '')
                     .replace('%tile%', _this._content_video_tracks_numbers[i] + '');
-                if (i == _this.actualTile) {
+                if (i == 4) {
                     url_1 = scheme.replace(new RegExp('%bitrate%', 'g'), _this._content_bitrates[2] + '')
                         .replace('%tile%', _this._content_video_tracks_numbers[i] + '');
                 }

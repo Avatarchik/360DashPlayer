@@ -321,7 +321,7 @@ class PlayerDemonstration {
                     let url = scheme.replace(new RegExp('%bitrate%', 'g'), this._content_bitrates[0] + '')
                     .replace('%tile%', this._content_video_tracks_numbers[i] + '');
                     
-                    if(i ==  this.actualTile){
+                    if(i ==  4){
                         url = scheme.replace(new RegExp('%bitrate%', 'g'), this._content_bitrates[2] + '')
                         .replace('%tile%', this._content_video_tracks_numbers[i] + '');
                     }

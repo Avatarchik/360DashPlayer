@@ -2,84 +2,65 @@
 <html>
 
 <head>
-    <title>Fraunhofer FOKUS - HEVC Tiled MSE Player</title>
-    <script type="text/javascript" src="libs/iso_boxer.min.js"></script>
-    <script type="text/javascript" src="libs/hevc_merger.js"></script>
-    <script type="text/javascript" src="libs/Chart.bundle.min.js"></script>
-    <script type="text/javascript" src="js/demo_player.js"></script>
-    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  <title>360DashPlayer</title>
 
-<!-- Use components defined in separate files. -->
-    <script src="js/arrow-key-rotation.js"></script>
-    <script src="js/play-on-window-click.js"></script>
-    <script src="js/play-on-vrdisplayactivate-or-enter-vr.js"></script>
-    <script src="js/hide-once-playing.js"></script>
+  <!-- 
+  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+  <!-- Use components defined in separate files. 
+  <script src="js/arrow-key-rotation.js"></script>
+  <script src="js/play-on-window-click.js"></script>
+  <script src="js/play-on-vrdisplayactivate-or-enter-vr.js"></script>
+  <script src="js/hide-once-playing.js"></script>
+  <script type="text/javascript" src="js/demo_player.js"></script>
+  <script type="text/javascript" src="libs/iso_boxer.min.js"></script>
+  <script type="text/javascript" src="libs/hevc_merger.js"></script>
+  <script type="text/javascript" src="libs/Chart.bundle.min.js"></script>
+  -->
 
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+
+<script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>	
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+
+  <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
 <body>
-
-<!-- Specify our scene. -->
-    <a-scene>
-      <!-- The original example also has this 180 degree rotation, to appear to be going forward. -->
-      <a-videosphere rotation="0 -90 0" src="#video" 
-                     play-on-window-click
-                     play-on-vrdisplayactivate-or-enter-vr>
-      </a-videosphere>
+  <div id="app">
+ <!-- Single source video. -->
+ <video data-dashjs-player autoplay v-bind:src="getVideoUrl()" controls></video>
+  </div>
       
-      <!-- Define camera with zero user height, movement disabled and arrow key rotation added. -->
-      <a-camera rotation="0 0 0" user-height="0" wasd-controls-enabled="false" arrow-key-rotation>
-        <!-- Text element for display messaging.  Hide once video is playing. -->
-        <a-entity id="msg" position="0 -0.3 -1.5">
-        </a-entity>
-      </a-camera>      
-      
-      <!-- Wait for the video to load. -->
-      <a-assets>
-        <!-- Single source video. -->
-        <video id="video" style="display:none" 
-               autoplay loop crossorigin="anonymous" playsinline webkit-playsinline>
-          <!-- MP4 video source. -->
-<!-- 
-          <source type="video/mp4"
-               src="https://ucarecdn.com/fadab25d-0b3a-45f7-8ef5-85318e92a261/" />-->
-        </video>
-      </a-assets>
-    </a-scene>
-
-    <button onClick="window.location.href='multi-source-detail.html'" style="position:absolute;top:10px;right:10px;">
-      Switch to multi-source detail example
-    </button>
-
-   <!--  <video autoplay></video> -->
-    
-    <script type="text/javascript">
-
-        grid_index = 0
-        content_index = 0
-
-        let hash = window.location.hash
-        hash = !hash ? '' : hash.substr(1)
-
-        if (hash.length) {
-            // get all params
-            let demo_opts = hash.split('--')
-            demo_opts.forEach(o => {
-                let p = o.split('=')
-                if (p.length !== 2) return
-
-                let name = p[0], value = p[1]
-
-                if (name === 'content-index') content_index = value
-                else if (name === 'grid-index') grid_index = value
-            })
+  <script>
+    var app = new Vue({
+      el:'#app',
+      data: {
+        videos : [ 
+         "Fuerteventura/fuerteventura.mpd"
+        ]
+      },
+      methods:{
+        getVideoUrl: function(){
+          url = window.location.href;
+          console.log("Url: "+url);
+          var name = "index";
+          name = name.replace(/[\[\]]/g, "\\$&");
+          console.log("Parameter: "+name);
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"), results = regex.exec(url);
+  
+          var index = decodeURIComponent(results[2].replace(/\+/g, " "));
+          console.log("Index: "+index);
+          return "http://localhost:80/360DashPlayer/media/"+this.videos[index];
         }
+      }
+    })
+  
+  </script>
 
-        let demo = new PlayerDemonstration('media/media.json', content_index, grid_index)
-        demo.init()
 
-    </script>
 </body>
-
 </html>
