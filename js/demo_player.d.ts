@@ -4,6 +4,7 @@ declare class PlayerDemonstration {
     private _CONTENT_URL;
     private _index_video;
     private _index_grid;
+    private finish;
     private _content_name;
     private _content_grid_size;
     private _content_url_scheme;
@@ -21,11 +22,6 @@ declare class PlayerDemonstration {
     private _demo_mode;
     private _demo_reload;
     private _controls_current_matrix;
-    private _controls_grid;
-    private _controls_grid_tiles;
-    private _controls_view;
-    private _controls_container;
-    private _controls_disable_viewport;
     private _player_current_segment;
     private _player_stored_segment;
     private _player_source_buffer;
@@ -35,18 +31,21 @@ declare class PlayerDemonstration {
     private _player_tiles_bytes_length;
     private _player_merger;
     private _player_container;
-    private _panel_chart_bitrates;
-    private _panel_chart_downloading;
-    private _panel_stats_data;
-    private _panel_total_downloaded;
+    private actualTile;
+    private cameraRotationTextView;
+    private tilesMap;
     constructor(content_list_url: any, index_video: any, index_grid: any);
     init(logs?: boolean): Promise<any>;
+    /**
+   * Create tiles map to identify the visible tile.
+   *
+   * @param colTiles - tile count in x direction
+   * @param rowTiles - tile count in y direction
+   */
+    private createTilesMap(colTiles, rowTiles);
     private _setContent();
     private _setDemo();
-    private _setControls();
     private _setData(name, value);
-    private _updatePanel();
-    private _setPanel();
     private _setPlayer();
     private _playerAppend();
     private _playerLoadSegment();

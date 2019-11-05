@@ -1,12 +1,12 @@
 {
-  "name": "hevc-js-tiles-merger",
+  "name": "360dashplayer",
   "version": "1.0.0",
   "description": "",
   "main": "demo_player.js",
   "types": "demo_player.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json && cp -r * ../* /Library/WebServer/Documents/360DashPlayer/ && /usr/sbin/apachectl restart"
   },
   "repository": {},
   "author": "",
