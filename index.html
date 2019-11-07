@@ -22,43 +22,41 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>	
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="css/style.css">
 
-  <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
 <body>
   <div id="app">
- <!-- Single source video. -->
- <video data-dashjs-player autoplay v-bind:src="getVideoUrl()" controls></video>
+      <div class="container">
+          <div class="row">
+            <div class="col-sm" v-for="video in media">
+              <!-- Single source video. -->
+              <video data-dashjs-player autoplay v-bind:src="video.stream" controls></video>
+            </div>
+        </div>
+
+      </div>
   </div>
       
   <script>
     var app = new Vue({
       el:'#app',
       data: {
-        videos : [ 
-         "Fuerteventura/fuerteventura.mpd",
-         "2019_Fehrbellin/fehrbellin.mpd"
+        media : [
+         { stream: "http://localhost:80/360DashPlayer/media/Fuerteventura/fuerteventura.mpd"},
+         { stream: "http://localhost:80/360DashPlayer/media/2019_Fehrbellin/fehrbellin.mpd"}
         ]
       },
       methods:{
-        getVideoUrl: function(){
-          url = window.location.href;
-          console.log("Url: "+url);
-          var name = "index";
-          name = name.replace(/[\[\]]/g, "\\$&");
-          console.log("Parameter: "+name);
-          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"), results = regex.exec(url);
-  
-          var index = decodeURIComponent(results[2].replace(/\+/g, " "));
+        getVideoUrl: function(index){
           console.log("Index: "+index);
           return "http://localhost:80/360DashPlayer/media/"+this.videos[index];
         }
       }
     })
-  
   </script>
-
-
 </body>
 </html>
