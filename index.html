@@ -7,7 +7,6 @@
   <!-- 
   <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
   <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
-  <!-- Use components defined in separate files. 
   <script src="js/arrow-key-rotation.js"></script>
   <script src="js/play-on-window-click.js"></script>
   <script src="js/play-on-vrdisplayactivate-or-enter-vr.js"></script>
@@ -17,7 +16,7 @@
   <script type="text/javascript" src="libs/hevc_merger.js"></script>
   <script type="text/javascript" src="libs/Chart.bundle.min.js"></script>
   -->
-
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>	
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
@@ -34,27 +33,46 @@
           <div class="row">
             <div class="col-sm" v-for="video in media">
               <!-- Single source video. -->
-              <video data-dashjs-player autoplay v-bind:src="video.stream" controls></video>
+              <video id="video" data-dashjs-player autoplay v-bind:src="video.stream" controls></video>
             </div>
         </div>
 
       </div>
   </div>
       
+
   <script>
+
+      function supportsVideoType(type) {
+        let video;
+      
+        // Allow user to create shortcuts, i.e. just "webm"
+        let formats = {
+          ogg: 'video/ogg; codecs="theora"',
+          h264: 'video/mp4; codecs="avc1.42E01E"',
+          h265: 'video/mp4; codecs="hev1.1.6.L186.80"',
+          webm: 'video/webm; codecs="vp8, vorbis"',
+          vp9: 'video/webm; codecs="vp9"',
+          hls: 'application/x-mpegURL; codecs="avc1.42E01E"'
+        };
+      
+        if(!video) {
+          video = document.getElementById('video')
+        }
+      
+        return video.canPlayType(formats[type] || type);
+      }
+
+      console.log("Support h.264: "+supportsVideoType('h264'));
+      console.log("Support h.265: "+supportsVideoType('h265'));
+
     var app = new Vue({
       el:'#app',
       data: {
         media : [
-         { stream: "http://localhost:80/360DashPlayer/media/Fuerteventura/fuerteventura.mpd"},
-         { stream: "http://localhost:80/360DashPlayer/media/2019_Fehrbellin/fehrbellin.mpd"}
+         { stream: "http://192.168.1.224:80/360DashPlayer/media/Fuerteventura/fuerteventura.mpd"},
+         { stream: "http://192.168.1.224:80/360DashPlayer/media/2019_Fehrbellin/fehrbellin.mpd"}
         ]
-      },
-      methods:{
-        getVideoUrl: function(index){
-          console.log("Index: "+index);
-          return "http://localhost:80/360DashPlayer/media/"+this.videos[index];
-        }
       }
     })
   </script>
