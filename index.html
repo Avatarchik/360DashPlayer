@@ -5,7 +5,7 @@
   <title>360DashPlayer</title>
 
   <!-- 
-  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  
   <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
   <script src="js/arrow-key-rotation.js"></script>
   <script src="js/play-on-window-click.js"></script>
@@ -16,12 +16,14 @@
   <script type="text/javascript" src="libs/hevc_merger.js"></script>
   <script type="text/javascript" src="libs/Chart.bundle.min.js"></script>
   -->
+
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>	
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 
@@ -30,12 +32,42 @@
 <body>
   <div id="app">
       <div class="container">
+          <div v-if='isHEVCSupported()'>
           <div class="row">
-            <div class="col-sm" v-for="video in media">
-              <!-- Single source video. -->
-              <video id="video" data-dashjs-player autoplay v-bind:src="video.stream" controls></video>
+            <div class="col-sm" v-for="video in h265">
+                    <div v-if="is360Stream(video)">
+                          <!-- 360 -->
+                          <a-scene>
+                            <!-- Defining the URL inline. Not recommended but more comfortable for web developers. -->
+                            <a-videosphere autoplay v-bind:src="video.url" controls></a-videosphere>
+                          </a-scene>
+                        
+                      </div>
+                      <div v-else>
+                          <video data-dashjs-player autoplay v-bind:src="video.url" controls></video>
+                        </div>
+                </div>
+          </div>
             </div>
-        </div>
+
+            <div v-else>
+            <div class="row">
+                <div class="col-sm" v-for="video in h264">
+                        <div v-if="is360Stream(video)">
+                              <!-- 360 -->
+                            
+                                <!-- Defining the URL inline. Not recommended but more comfortable for web developers. -->
+                                <a-videosphere autoplay v-bind:src="video.url" controls></a-videosphere>
+                              
+                            
+                          </div>
+                          <div v-else>
+                              <video data-dashjs-player autoplay v-bind:src="video.url" controls></video>
+                            </div>
+                    </div>
+              </div>
+            </div>
+        
 
       </div>
   </div>
@@ -43,38 +75,60 @@
 
   <script>
 
-      function supportsVideoType(type) {
-        let video;
-      
-        // Allow user to create shortcuts, i.e. just "webm"
-        let formats = {
-          ogg: 'video/ogg; codecs="theora"',
-          h264: 'video/mp4; codecs="avc1.42E01E"',
-          h265: 'video/mp4; codecs="hev1.1.6.L186.80"',
-          webm: 'video/webm; codecs="vp8, vorbis"',
-          vp9: 'video/webm; codecs="vp9"',
-          hls: 'application/x-mpegURL; codecs="avc1.42E01E"'
-        };
-      
-        if(!video) {
-          video = document.getElementById('video')
-        }
-      
-        return video.canPlayType(formats[type] || type);
-      }
-
-      console.log("Support h.264: "+supportsVideoType('h264'));
-      console.log("Support h.265: "+supportsVideoType('h265'));
-
     var app = new Vue({
       el:'#app',
       data: {
-        media : [
-         { stream: "http://192.168.1.224:80/360DashPlayer/media/Fuerteventura/fuerteventura.mpd"},
-         { stream: "http://192.168.1.224:80/360DashPlayer/media/2019_Fehrbellin/fehrbellin.mpd"}
-        ]
+        h265 : [
+         { 
+            omnidirectional : false,
+            url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fehrbellin/h265/fehrbellin.mpd"
+         },
+        { 
+            omnidirectional: false,
+            url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fuerteventura/h265/fuerteventura.mpd"
+        },
+        {
+          omnidirectional: true,
+          url : "http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/oberwiesenthal2019.mp4"
+        }
+      ],
+      h264 : [
+      { 
+        omnidirectional : false,
+        url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fehrbellin/h264/fehrbellin.mpd",
+     },
+    { 
+        omnidirectional: false,
+        url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fuerteventura/h264/fuerteventura.mpd",
+    }
+      ]
+      },
+      methods:{
+        isHEVCSupported: function(){
+          let video;
+      
+          if(!video) {
+            video = document.createElement('video')
+          }
+    
+          let h265 = video.canPlayType('video/mp4; codecs="hev1.1.6.L186.80"');
+          if(h265 === 'probably' || h265 === 'maybe'){
+            console.log("HEVC is supported.");
+            return true;
+          }
+          console.log("H.265/HEVC is not supported. Use H.264/AVC.")
+          return false;
+        },
+      is360Stream: function(stream){
+        console.log(stream.omnidirectional);
+        if(stream.omnidirectional){
+          return true;
+        } else {
+          return false;
+        }
       }
-    })
+    }
+    });
   </script>
 </body>
 </html>
