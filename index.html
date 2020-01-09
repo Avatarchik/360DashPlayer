@@ -36,15 +36,26 @@
           <div class="row">
             <div class="col-sm" v-for="video in h265">
                     <div v-if="is360Stream(video)">
-                          <!-- 360 -->
-                          <a-scene>
-                            <!-- Defining the URL inline. Not recommended but more comfortable for web developers. -->
-                            <a-videosphere autoplay v-bind:src="video.url" controls></a-videosphere>
-                          </a-scene>
-                        
+                         
+                      <div v-if="video.playing">
+                        <a-scene v-on:click="play(video)">
+                          <a-assets>
+                            <video id="video" src="http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/360test.mp4" loop webkit-playsinline ></video>
+                          </a-assets>
+                          <a-videosphere id="videosphere" src="#video" rotation="0 180 0"></a-videosphere>
+                        </a-scene>    
                       </div>
                       <div v-else>
-                          <video data-dashjs-player autoplay v-bind:src="video.url" controls></video>
+                        <video src="http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/360test.mp4" v-on:click="start360Video(video)"></video>
+                      </div>
+                      
+
+                              
+
+                      </div>
+                      
+                      <div v-else>
+                          <video data-dashjs-player v-bind:src="video.url" controls></video>
                         </div>
                 </div>
           </div>
@@ -55,14 +66,15 @@
                 <div class="col-sm" v-for="video in h264">
                         <div v-if="is360Stream(video)">
                               <!-- 360 -->
-                            
+                            <a-scene crossorigin="anonymous">
                                 <!-- Defining the URL inline. Not recommended but more comfortable for web developers. -->
-                                <a-videosphere autoplay v-bind:src="video.url" controls></a-videosphere>
+                                <a-videosphere v-bind:src="video.url" controls></a-videosphere>
+                              </a-scene>
                               
                             
                           </div>
                           <div v-else>
-                              <video data-dashjs-player autoplay v-bind:src="video.url" controls></video>
+                              <video data-dashjs-player v-bind:src="video.url" controls></video>
                             </div>
                     </div>
               </div>
@@ -81,25 +93,35 @@
         h265 : [
          { 
             omnidirectional : false,
-            url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fehrbellin/h265/fehrbellin.mpd"
+            url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fehrbellin/h265/fehrbellin.mpd",
+            playing: false
          },
         { 
             omnidirectional: false,
-            url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fuerteventura/h265/fuerteventura.mpd"
+            url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fuerteventura/h265/fuerteventura.mpd",
+            playing: false
         },
         {
           omnidirectional: true,
-          url : "http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/oberwiesenthal2019.mp4"
+          url : "http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/360test.mp4",
+          playing: false
         }
       ],
       h264 : [
       { 
         omnidirectional : false,
         url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fehrbellin/h264/fehrbellin.mpd",
+        playing: false
      },
     { 
         omnidirectional: false,
         url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fuerteventura/h264/fuerteventura.mpd",
+        playing: false
+    },
+    {
+      omnidirectional: true,
+      url : "http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/360test.mp4",
+      playing: false
     }
       ]
       },
@@ -126,6 +148,18 @@
         } else {
           return false;
         }
+      },
+      start360Video: function(stream){
+        stream.playing = true;
+        console.log('start360Video()');
+        
+      },
+      play: function(stream){
+        let videosphere = document.getElementById("videosphere");
+        let vid = document.getElementById("video");
+        vid.play();
+        videosphere.components.material.material.map.image.play();
+        console.log('play()');
       }
     }
     });
