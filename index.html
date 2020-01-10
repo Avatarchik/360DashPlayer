@@ -32,38 +32,34 @@
 <body>
   <div id="app">
       <div class="container">
+          <!-- HEVC -->
           <div v-if='isHEVCSupported()'>
           <div class="row">
             <div class="col-sm" v-for="video in h265">
-                    <div v-if="is360Stream(video)">
-                         
-                      <div v-if="video.playing">
-                        <a-scene v-on:click="play(video)">
-                          <a-assets>
-                            <video id="video" src="http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/360test.mp4" loop webkit-playsinline ></video>
-                          </a-assets>
-                          <a-videosphere id="videosphere" src="#video" rotation="0 180 0"></a-videosphere>
-                        </a-scene>    
-                      </div>
-                      <div v-else>
-                        <video src="http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/360test.mp4" v-on:click="start360Video(video)"></video>
-                      </div>
-                      
-
-                              
-
-                      </div>
-                      
-                      <div v-else>
-                          <video data-dashjs-player v-bind:src="video.url" controls></video>
-                        </div>
+              <div v-if="is360Stream(video)">
+                <div v-if="video.playing">
+                  <a-scene v-on:click="play(video)">
+                    <a-assets>
+                      <video id="dashjs" class="player" controls autoplay=""></video>
+                    </a-assets>
+                    <a-videosphere id="videosphere" src="#dashjs"></a-videosphere>
+                  </a-scene>    
                 </div>
-          </div>
+                <div v-else>
+                  <video data-dashjs-player controls autoplay="" v-bind:src="video.url" v-on:click="start360Video(video)"></video>
+                </div>
+              </div>
+              <div v-else>
+                <video data-dashjs-player controls autoplay="" v-bind:src="video.url"></video>
+              </div>
             </div>
+          </div>
+          </div>
 
-            <div v-else>
-            <div class="row">
-                <div class="col-sm" v-for="video in h264">
+          <!-- AVC -->
+          <div v-else>
+          <div class="row">
+            <div class="col-sm" v-for="video in h264">
                         <div v-if="is360Stream(video)">
                               <!-- 360 -->
                             <a-scene crossorigin="anonymous">
@@ -103,7 +99,7 @@
         },
         {
           omnidirectional: true,
-          url : "http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/360test.mp4",
+          url : "http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/oberwiesenthal.mpd",
           playing: false
         }
       ],
@@ -155,11 +151,15 @@
         
       },
       play: function(stream){
-        let videosphere = document.getElementById("videosphere");
-        let vid = document.getElementById("video");
-        vid.play();
-        videosphere.components.material.material.map.image.play();
-        console.log('play()');
+        var playerElement = $('#dashjs');
+        playerElement.show();
+        
+        var player = dashjs.MediaPlayer().create();
+        console.log('Created DASH.js Player');
+        
+        player.initialize(document.querySelector('#dashjs'), stream.url, true);
+        console.log('Starting playback');
+        console.log('Set player source');
       }
     }
     });
