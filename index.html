@@ -46,7 +46,7 @@
                   </a-scene>    
                 </div>
                 <div v-else>
-                  <video data-dashjs-player controls autoplay="" v-bind:src="video.url" v-on:click="start360Video(video)"></video>
+                  <video data-dashjs-player v-bind:src="video.url" v-on:click="start360Video(video)"></video>
                 </div>
               </div>
               <div v-else>
