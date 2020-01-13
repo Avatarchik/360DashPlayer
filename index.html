@@ -37,8 +37,8 @@
           <div class="row">
             <div class="col-sm" v-for="video in h265">
               <div v-if="is360Stream(video)">
-                <div v-if="video.playing">
-                  <a-scene v-on:click="play(video)">
+                <div v-if="video.showScene">
+                  <a-scene start="Scene is ready">
                     <a-assets>
                       <video id="dashjs" class="player" controls autoplay=""></video>
                     </a-assets>
@@ -46,7 +46,7 @@
                   </a-scene>    
                 </div>
                 <div v-else>
-                  <video data-dashjs-player v-bind:src="video.url" v-on:click="start360Video(video)"></video>
+                  <video data-dashjs-player v-bind:src="video.url" v-on:click="showScene(video)"></video>
                 </div>
               </div>
               <div v-else>
@@ -58,30 +58,34 @@
 
           <!-- AVC -->
           <div v-else>
-          <div class="row">
-            <div class="col-sm" v-for="video in h264">
-                        <div v-if="is360Stream(video)">
-                              <!-- 360 -->
-                            <a-scene crossorigin="anonymous">
-                                <!-- Defining the URL inline. Not recommended but more comfortable for web developers. -->
-                                <a-videosphere v-bind:src="video.url" controls></a-videosphere>
-                              </a-scene>
-                              
-                            
-                          </div>
-                          <div v-else>
-                              <video data-dashjs-player v-bind:src="video.url" controls></video>
-                            </div>
-                    </div>
+            <div class="row">
+              <div class="col-sm" v-for="video in h264">
+                <div v-if="is360Stream(video)">
+                  <div v-if="video.showScene">
+                    <a-scene start="Scene is ready">
+                      <a-assets>
+                        <video id="dashjs" class="player" controls autoplay=""></video>
+                      </a-assets>
+                      <a-videosphere id="videosphere" src="#dashjs"></a-videosphere>
+                    </a-scene>    
+                  </div>
+                  <div v-else>
+                    <video data-dashjs-player v-bind:src="video.url" v-on:click="showScene(video)"></video>
+                  </div>
+                </div>
+                <div v-else>
+                  <video data-dashjs-player controls autoplay="" v-bind:src="video.url"></video>
+                </div>     
               </div>
             </div>
-        
-
+          </div>
       </div>
   </div>
       
 
   <script>
+
+ 
 
     var app = new Vue({
       el:'#app',
@@ -89,35 +93,41 @@
         h265 : [
          { 
             omnidirectional : false,
-            url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fehrbellin/h265/fehrbellin.mpd",
-            playing: false
+            url : "http://h2857701.stratoserver.net/360DashPlayer/media/2019_Fehrbellin/h265/fehrbellin.mpd",
+            playing: false,
+            showScene : false
          },
         { 
             omnidirectional: false,
-            url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fuerteventura/h265/fuerteventura.mpd",
-            playing: false
+            url : "http://h2857701.stratoserver.net/360DashPlayer/media/2019_Fuerteventura/h265/fuerteventura.mpd",
+            playing: false,
+            showScene : false
         },
         {
           omnidirectional: true,
-          url : "http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/oberwiesenthal.mpd",
-          playing: false
+          url : "http://h2857701.stratoserver.net/360DashPlayer/media/2019_Oberwiesenthal/h265/oberwiesenthal.mpd",
+          playing: false,
+          showScene : false
         }
       ],
       h264 : [
       { 
         omnidirectional : false,
-        url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fehrbellin/h264/fehrbellin.mpd",
-        playing: false
+        url : "http://h2857701.stratoserver.net/360DashPlayer/media/2019_Fehrbellin/h264/fehrbellin.mpd",
+        playing: false,
+        showScene : false
      },
     { 
         omnidirectional: false,
-        url : "http://192.168.1.224:80/360DashPlayer/media/2019_Fuerteventura/h264/fuerteventura.mpd",
-        playing: false
+        url : "http://h2857701.stratoserver.net/360DashPlayer/media/2019_Fuerteventura/h264/fuerteventura.mpd",
+        playing: false,
+        showScene : false
     },
     {
       omnidirectional: true,
-      url : "http://192.168.1.224:80/360DashPlayer/media/2019_Oberwiesenthal/h265/360test.mp4",
-      playing: false
+      url : "http://h2857701.stratoserver.net/360DashPlayer/media/2019_Oberwiesenthal/h264/oberwiesenthal.mpd",
+      playing: false,
+      showScene : false
     }
       ]
       },
@@ -145,21 +155,28 @@
           return false;
         }
       },
-      start360Video: function(stream){
-        stream.playing = true;
-        console.log('start360Video()');
+      showScene: function(stream){
+        stream.showScene = true;
+        console.log('showScene()');
+        AFRAME.registerComponent('start', {
+          schema: {type: 'string'},
         
-      },
-      play: function(stream){
-        var playerElement = $('#dashjs');
-        playerElement.show();
-        
-        var player = dashjs.MediaPlayer().create();
-        console.log('Created DASH.js Player');
-        
-        player.initialize(document.querySelector('#dashjs'), stream.url, true);
-        console.log('Starting playback');
-        console.log('Set player source');
+          init: function () {
+            var stringToLog = this.data;
+            console.log(stringToLog);
+            var playerElement = $('#dashjs');
+            playerElement.show();
+    
+            console.log("Player element: ",playerElement[0]);
+          
+            var player = dashjs.MediaPlayer().create();
+            console.log('Created DASH.js Player: '+JSON.stringify(player));
+          
+            player.initialize(document.querySelector('#dashjs'),stream.url, true);
+            console.log('Starting playback');
+            console.log('Set player source');
+          }
+        });
       }
     }
     });
