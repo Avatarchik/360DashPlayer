@@ -40,17 +40,17 @@
                 <div v-if="video.showScene">
                   <a-scene start="Scene is ready">
                     <a-assets>
-                      <video id="dashjs" class="player" controls autoplay=""></video>
+                      <video id="dashjs" class="player" controls autoplay="" webkit-playsinline></video>
                     </a-assets>
                     <a-videosphere id="videosphere" src="#dashjs"></a-videosphere>
                   </a-scene>    
                 </div>
                 <div v-else>
-                  <video data-dashjs-player v-bind:src="video.url" v-on:click="showScene(video)"></video>
+                  <video data-dashjs-player v-bind:src="video.url" v-on:click="showScene(video)" webkit-playsinline></video>
                 </div>
               </div>
               <div v-else>
-                <video data-dashjs-player controls autoplay="" v-bind:src="video.url"></video>
+                <video data-dashjs-player controls autoplay="" v-bind:src="video.url" webkit-playsinline></video>
               </div>
             </div>
           </div>
@@ -64,17 +64,17 @@
                   <div v-if="video.showScene">
                     <a-scene start="Scene is ready">
                       <a-assets>
-                        <video id="dashjs" class="player" controls autoplay=""></video>
+                        <video id="dashjs" class="player" controls autoplay="" webkit-playsinline></video>
                       </a-assets>
                       <a-videosphere id="videosphere" src="#dashjs"></a-videosphere>
                     </a-scene>    
                   </div>
                   <div v-else>
-                    <video data-dashjs-player v-bind:src="video.url" v-on:click="showScene(video)"></video>
+                    <video data-dashjs-player v-bind:src="video.url" v-on:click="showScene(video)" webkit-playsinline></video>
                   </div>
                 </div>
                 <div v-else>
-                  <video data-dashjs-player controls autoplay="" v-bind:src="video.url"></video>
+                  <video data-dashjs-player controls autoplay="" v-bind:src="video.url" webkit-playsinline></video>
                 </div>     
               </div>
             </div>
