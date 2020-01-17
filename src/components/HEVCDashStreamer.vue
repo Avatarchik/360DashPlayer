@@ -1,6 +1,5 @@
 <template> 
 <mdb-container>
-  <h1>{{ name }}</h1>
     <mdb-row>
       <mdb-col md="6" v-bind:key="video.id" v-for="video in media.h265">
         <div class="embed-responsive embed-responsive-16by9">

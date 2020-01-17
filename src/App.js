@@ -25,7 +25,14 @@ export default {
                         url: "http://localhost/360DashPlayer/media/2019_Fuerteventura/h265/fuerteventura.mpd",
                         playing: false,
                         showScene: false
-                    }
+                    },
+                    {
+                        id: 3,
+                        omnidirectional: true,
+                        url : "http://localhost/360DashPlayer/media/2019_Oberwiesenthal/h265/oberwiesenthal.mpd",
+                        playing: false,
+                        showScene : false
+                      }   
                 ],
                 h264: [
                     {
@@ -41,8 +48,14 @@ export default {
                         url: "http://localhost/360DashPlayer/media/2019_Fuerteventura/h264/fuerteventura.mpd",
                         playing: false,
                         showScene: false
-                    }
-
+                    },
+                    {
+                        id: 3,
+                        omnidirectional: true,
+                        url : "http://localhost/360DashPlayer/media/2019_Oberwiesenthal/h264/oberwiesenthal.mpd",
+                        playing: false,
+                        showScene : false
+                      }                  
                 ]
             }
         }
@@ -57,14 +70,11 @@ export default {
 
                 let h265 = video.canPlayType('video/mp4; codecs="hev1.1.6.L186.80"');
                 if (h265 === 'probably' || h265 === 'maybe') {
-                    //console.log("HEVC is supported.");
                     return true;
                 }
-                //console.log("H.265/HEVC is not supported. Use H.264/AVC.")
                 return false;
             },
             is360Stream: function(stream) {
-                // console.log(stream.omnidirectional);
                 if (stream.omnidirectional) {
                     return true;
                 } else {

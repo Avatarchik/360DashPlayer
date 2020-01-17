@@ -8,11 +8,12 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "mdbvue": "^6.2.0",
+    "aframe": "^1.0.3",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.2.2",
     "core-js": "^3.4.4",
     "dashjs": "^3.0.1",
+    "mdbvue": "^6.2.0",
     "videojs": "^1.0.0",
     "videojs-contrib-dash": "^2.11.0",
     "vue": "^2.6.11"
