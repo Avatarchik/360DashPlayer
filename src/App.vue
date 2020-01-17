@@ -1,40 +1,16 @@
 <template>
   <div id="app">
-    <HEVCStreamer v-bind:media="media" />
+    <h1>Meine Videos</h1>
+    <div v-if="isHEVCSupported()">
+    <HEVCDashStreamer v-bind:media="media" />
+    </div>
+    <div v-else>
+      <AVCDashStreamer v-bind:media="media" />
+    </div>
   </div>
 </template>
 
-<script>
-//import HelloWorld from './components/HelloWorld.vue'
-import HEVCStreamer from "./components/HEVCStreamer.vue";
-
-export default {
-  name: 'app',
-  components: {
-    HEVCStreamer
-  },
-  data() {
-    return {
-      media: [
-       {    
-            id: 1,
-            omnidirectional : false,
-            url : "http://localhost/360DashPlayer/media/2019_Fehrbellin/h265/fehrbellin.mpd",
-            playing: false,
-            showScene : false
-         },
-        { 
-            id: 2,
-            omnidirectional: false,
-            url : "http://localhost/360DashPlayer/media/2019_Fuerteventura/h265/fuerteventura.mpd",
-            playing: false,
-            showScene : false
-        }
-    ]
-    }
-  }
-}
-</script>
+<script src="./App.js"></script>	
 
 <style>
 #app {

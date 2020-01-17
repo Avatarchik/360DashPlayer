@@ -1,7 +1,8 @@
 <template> 
 <mdb-container>
+  <h1>{{ name }}</h1>
     <mdb-row>
-      <mdb-col md="6" v-bind:key="video.id" v-for="video in media">
+      <mdb-col md="6" v-bind:key="video.id" v-for="video in media.h264">
         <div class="embed-responsive embed-responsive-16by9">
           <video class="embed-responsive-item" data-dashjs-player controls v-bind:src="video.url" webkit-playsinline allowfullscreen></video>
         </div>
@@ -23,7 +24,7 @@ import { mdbContainer, mdbRow, mdbCol } from 'mdbvue';
 
 
 export default {
-    name : "HEVCStreamer",
+    name : "AVCDashStreamer",
     props: ["media"],
       components: {
     mdbContainer,
