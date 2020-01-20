@@ -2,10 +2,10 @@
   <mdb-container>
     <mdb-row>
       <mdb-col md="6" v-bind:key="video.id" v-for="video in media.h264">
-        <div v-if="is360Video(video)" class="embed-responsive embed-responsive-16by9">
-         <VRDashStreamer></VRDashStreamer>
+        <div v-if="is360Video(video)" class="embed-responsive embed-responsive-16by9" style="margin: 10px;">
+         <VRDashStreamer class="embed-responsive-item" ></VRDashStreamer>
         </div>
-        <div v-else class="embed-responsive embed-responsive-16by9">
+        <div v-else class="embed-responsive embed-responsive-16by9" style="margin: 10px;">
           <video
             class="embed-responsive-item"
             data-dashjs-player

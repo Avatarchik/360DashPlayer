@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>Meine Videos</h1>
+    <h1 style="margin: 10px;">Meine Videos</h1>
     <div v-if="isHEVCSupported()">
     <HEVCDashStreamer v-bind:media="media" />
     </div>

@@ -55,7 +55,14 @@ export default {
                         url : "http://localhost/360DashPlayer/media/2019_Oberwiesenthal/h264/oberwiesenthal.mpd",
                         playing: false,
                         showScene : false
-                      }                  
+                    },
+                    {
+                        id: 4,
+                        omnidirectional: false,
+                        url: "http://localhost/360DashPlayer/media/2019_Fuerteventura/h264/fuerteventura.mpd",
+                        playing: false,
+                        showScene: false
+                    },                  
                 ]
             }
         }
