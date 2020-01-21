@@ -16,7 +16,8 @@
     "mdbvue": "^6.2.0",
     "videojs": "^1.0.0",
     "videojs-contrib-dash": "^2.11.0",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vuejs-vr": "^1.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",

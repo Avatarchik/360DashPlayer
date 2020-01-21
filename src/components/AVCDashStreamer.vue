@@ -3,7 +3,18 @@
     <mdb-row>
       <mdb-col md="6" v-bind:key="video.id" v-for="video in media.h264">
         <div v-if="is360Video(video)" class="embed-responsive embed-responsive-16by9" style="margin: 10px;">
-         <VRDashStreamer class="embed-responsive-item" ></VRDashStreamer>
+            <video
+            class="embed-responsive-item"
+            data-dashjs-player
+            controls
+            v-bind:src="video.url"
+            webkit-playsinline
+            allowfullscreen
+            v-on:click="start360Video"
+          ></video>
+            <div v-if="is360Video == true">
+                <VRDashStreamer class="embed-responsive-item" ></VRDashStreamer>
+            </div>
         </div>
         <div v-else class="embed-responsive embed-responsive-16by9" style="margin: 10px;">
           <video
@@ -34,12 +45,23 @@ import VRDashStreamer from "./VRDashStreamer.vue";
 
 export default {
   name: "AVCDashStreamer",
-  props: ["media"],
+  props: {
+     is360Video: {
+    default: false,
+  },
+  media: {
+    default: "http://localhost/360DashPlayer/media/2019_Oberwiesenthal/h264/oberwiesenthal.mpd"
+  }
+  },
+
   components: {
     mdbContainer,
     mdbRow,
     mdbCol,
     VRDashStreamer
+  },
+  mounted : function(){
+    is360Video = false;
   },
   methods: {
     is360Video: function(video) {
@@ -50,6 +72,9 @@ export default {
          console.log("video: ",video.omnidirectional);
         return false;
       }
+    },
+    start360Video : function(){
+      console.log("Start 360 Video");
     }
   }
 };
