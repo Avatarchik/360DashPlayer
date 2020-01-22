@@ -16,22 +16,16 @@ export default {
                         id: 1,
                         omnidirectional: false,
                         url: "http://localhost/360DashPlayer/media/2019_Fehrbellin/h265/fehrbellin.mpd",
-                        playing: false,
-                        showScene: false
                     },
                     {
                         id: 2,
                         omnidirectional: false,
                         url: "http://localhost/360DashPlayer/media/2019_Fuerteventura/h265/fuerteventura.mpd",
-                        playing: false,
-                        showScene: false
                     },
                     {
                         id: 3,
                         omnidirectional: true,
                         url : "http://localhost/360DashPlayer/media/2019_Oberwiesenthal/h265/oberwiesenthal.mpd",
-                        playing: false,
-                        showScene : false
                       }   
                 ],
                 h264: [
@@ -39,30 +33,17 @@ export default {
                         id: 1,
                         omnidirectional: false,
                         url: "http://localhost/360DashPlayer/media/2019_Fehrbellin/h264/fehrbellin.mpd",
-                        playing: false,
-                        showScene: false
                     },
                     {
                         id: 2,
                         omnidirectional: false,
                         url: "http://localhost/360DashPlayer/media/2019_Fuerteventura/h264/fuerteventura.mpd",
-                        playing: false,
-                        showScene: false
                     },
                     {
                         id: 3,
                         omnidirectional: true,
                         url : "http://localhost/360DashPlayer/media/2019_Oberwiesenthal/h264/oberwiesenthal.mpd",
-                        playing: false,
-                        showScene : false
-                    },
-                    {
-                        id: 4,
-                        omnidirectional: false,
-                        url: "http://localhost/360DashPlayer/media/2019_Fuerteventura/h264/fuerteventura.mpd",
-                        playing: false,
-                        showScene: false
-                    },                  
+                    }       
                 ]
             }
         }

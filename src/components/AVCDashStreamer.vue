@@ -1,30 +1,40 @@
 <template>
+
   <mdb-container>
     <mdb-row>
       <mdb-col md="6" v-bind:key="video.id" v-for="video in media.h264">
-        <div v-if="is360Video(video)" class="embed-responsive embed-responsive-16by9" style="margin: 10px;">
-            <video
+        <div class="embed-responsive embed-responsive-16by9" style="margin: 10px;">
+          <div v-if="video.omnidirectional">
+             <video
+            id="video.id"
             class="embed-responsive-item"
             data-dashjs-player
-            controls
-            v-bind:src="video.url"
             webkit-playsinline
             allowfullscreen
-            v-on:click="start360Video"
+            v-bind:src="video.url"
           ></video>
-            <div v-if="is360Video == true">
-                <VRDashStreamer class="embed-responsive-item" ></VRDashStreamer>
+           <div class="embed-responsive-item"> 
+           <b-button class="float-right" :pressed.sync="is360Video">View in VR
+            </b-button>
             </div>
-        </div>
-        <div v-else class="embed-responsive embed-responsive-16by9" style="margin: 10px;">
-          <video
+
+            <div v-if="is360Video == true">
+              <VRDashStreamer></VRDashStreamer>
+            </div>
+           </div>
+           <div v-else>
+                <video
+            id="video.id"
             class="embed-responsive-item"
             data-dashjs-player
             controls
-            v-bind:src="video.url"
             webkit-playsinline
             allowfullscreen
-          ></video>
+            v-bind:src="video.url"
+          ></video> 
+
+           </div>
+                  
         </div>
       </mdb-col>
     </mdb-row>
@@ -60,21 +70,14 @@ export default {
     mdbCol,
     VRDashStreamer
   },
-  mounted : function(){
-    is360Video = false;
-  },
   methods: {
-    is360Video: function(video) {
+    startVideo : function(video){
+      console.log("video: ",video);
       if (video.omnidirectional) {
-        console.log("video: ",video.omnidirectional);
-        return true;
+       this.is360Video = true;
       } else {
-         console.log("video: ",video.omnidirectional);
-        return false;
+        this.is360Video = false;
       }
-    },
-    start360Video : function(){
-      console.log("Start 360 Video");
     }
   }
 };
