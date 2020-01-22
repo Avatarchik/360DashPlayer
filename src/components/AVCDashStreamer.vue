@@ -1,27 +1,11 @@
 <template>
-
   <mdb-container>
     <mdb-row>
       <mdb-col md="6" v-bind:key="video.id" v-for="video in media.h264">
         <div class="embed-responsive embed-responsive-16by9" style="margin: 10px;">
-          <div v-if="video.omnidirectional">
-             <video
-            id="video.id"
-            class="embed-responsive-item"
-            data-dashjs-player
-            webkit-playsinline
-            allowfullscreen
-            v-bind:src="video.url"
-          ></video>
-           <div class="embed-responsive-item"> 
-           <b-button class="float-right" :pressed.sync="is360Video">View in VR
-            </b-button>
-            </div>
-
             <div v-if="is360Video == true">
               <VRDashStreamer></VRDashStreamer>
             </div>
-           </div>
            <div v-else>
                 <video
             id="video.id"
@@ -31,10 +15,11 @@
             webkit-playsinline
             allowfullscreen
             v-bind:src="video.url"
-          ></video> 
-
-           </div>
-                  
+          ></video>
+          <div v-if="video.omnidirectional" class="embed-responsive-item">
+           <b-button class="float-right" :pressed.sync="is360Video">View in VR</b-button>
+          </div> 
+           </div>     
         </div>
       </mdb-col>
     </mdb-row>
