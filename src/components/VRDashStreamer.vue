@@ -1,15 +1,11 @@
 <template>
-
-
   <a-scene v-on:click="startVideo()">
             <a-assets>
                <video data-dashjs-player id="dashjs" class="player" webkit-playsinline></video>
           
             </a-assets>
            <a-videosphere id="videosphere" src="#dashjs"></a-videosphere>
-          </a-scene>
-
-          
+          </a-scene> 
  </template>
 
 <script>
@@ -23,12 +19,9 @@ export default {
   },
   methods: {
     startVideo: function(){
- 
         var player = videojs('dashjs')
-
         var readyState = player.readyState();
         console.log("State: "+readyState);
-       
         if(readyState == 0){
           player.ready(function () {
           player.src({
@@ -36,8 +29,6 @@ export default {
           type: 'application/dash+xml'
         })
         player.play()
-        this.playing = true;
-        console.log("Playing: "+this.playing);
         });
         }
   }    
