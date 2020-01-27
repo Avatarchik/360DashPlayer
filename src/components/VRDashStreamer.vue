@@ -20,20 +20,28 @@ import "videojs-contrib-dash";
 export default {
   name: "VRDashStreamer",
   mounted : function(){
-
   },
   methods: {
     startVideo: function(){
-       var player = videojs('dashjs')
-    player.ready(function () {
-      player.src({
-        src: 'http://localhost/360DashPlayer/media/2019_Oberwiesenthal/h264/oberwiesenthal.mpd',
-        type: 'application/dash+xml'
-      })
-      player.play()
-    })
-    }
-  }
+ 
+        var player = videojs('dashjs')
+
+        var readyState = player.readyState();
+        console.log("State: "+readyState);
+       
+        if(readyState == 0){
+          player.ready(function () {
+          player.src({
+          src: 'http://localhost/360DashPlayer/media/2019_Oberwiesenthal/h264/oberwiesenthal.mpd',
+          type: 'application/dash+xml'
+        })
+        player.play()
+        this.playing = true;
+        console.log("Playing: "+this.playing);
+        });
+        }
+  }    
+}
 
 };
 </script>
